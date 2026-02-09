@@ -27,4 +27,5 @@ The plugin is currently going through the review process, so is not yet availabl
 2. Open the Settings page for BRAT.
 3. Click “Add Beta Plugin”.
 4. Paste in this address: `https://github.com/alangrainger/obsidian-task-zero`
-5. Click “Add Plugin”.
+5. Choose `latest` under "Select a version".
+6. Click “Add Plugin”.
