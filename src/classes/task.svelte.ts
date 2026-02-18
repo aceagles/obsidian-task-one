@@ -296,7 +296,7 @@ export class Task implements TaskRow {
 
     // Is this a sub-task?
     // 'item.parent' is Obsidian returning the line number of the sub-task's parent
-    if (item.parent > 0) {
+    if (item.parent >= 0) {
       const parentTask = previous.find(x => x.task.line === item.parent)?.task
       if (parentTask) {
         record.parent = parentTask.id
