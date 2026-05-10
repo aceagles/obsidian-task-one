@@ -37,9 +37,8 @@ export class Tasks {
       void this.processQueue()
     }, 5000, true)
 
-    // Orphan tasks on file delete
     plugin.registerEvent(this.app.vault.on('delete', file => {
-      if (file instanceof TFile) this.orphanTasksFromPath(file.path)
+      if (file instanceof TFile) void this.#handleFileDelete(file)
     }))
   }
 
@@ -369,6 +368,31 @@ export class Tasks {
       this.db.update(task)
     })
     dbEvents.emit(DatabaseEvent.TasksExternalChange)
+  }
+
+  async #handleFileDelete (file: TFile) {
+    const wikilinkRow = this.db.rows().find(row =>
+      !row.orphaned && row.text.includes(`[[${file.basename}]]`)
+    )
+    if (wikilinkRow) {
+      this.db.rows()
+        .filter(row => row.path === file.path)
+        .forEach(row => this.db.delete(row.id))
+      this.db.delete(wikilinkRow.id)
+      await this.#removeTaskLineFromNote(wikilinkRow.path, wikilinkRow.id)
+      dbEvents.emit(DatabaseEvent.TasksExternalChange)
+    } else {
+      this.orphanTasksFromPath(file.path)
+    }
+  }
+
+  async #removeTaskLineFromNote (path: string, taskId: number) {
+    const tfile = this.app.vault.getFileByPath(path)
+    if (!tfile) return
+    const regex = this.taskLineRegex(taskId)
+    await this.app.vault.process(tfile, data =>
+      data.split('\n').filter(line => !regex.test(line)).join('\n')
+    )
   }
 
   cleanOrphans () {
