@@ -20,6 +20,10 @@ I like to start my day by looking through my tasks and staging a number of tasks
 
 For larger projects, it feels a bit too ephemeral to have them just as nested task lists. There is now the option to promote a project into a file-based project. This will create a project, create the file, move all nested tasks and projects into it, and then update links. It will then behave more or less the same as other projects, except they will have an actual location.
 
+### Tasklist Text Wrapping
+
+Tasks will now wrap in the truncate in the task list so that you can always read a full task.
+
 # Task Zero plugin for Obsidian
 
 Task Zero is a keyboard-first GTD task management system for Obsidian.
