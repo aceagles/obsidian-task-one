@@ -90,8 +90,8 @@
 
   // Navigate up/down the task list
   const getRowDown = () => state.tasks[Math.min(activeIndex + 1, state.tasks.length - 1)]
-  const listUp = () => state.activeId = state.tasks[Math.max(activeIndex - 1, 0)].id
-  const listDown = () => state.activeId = getRowDown().id
+  const listUp = () => { if (state.tasks.length) state.activeId = state.tasks[Math.max(activeIndex - 1, 0)].id }
+  const listDown = () => { if (state.tasks.length) state.activeId = getRowDown().id }
 
   /*
    * Hotkeys that apply to both tasklist and sidebar views
@@ -121,8 +121,7 @@
     [hotkeys[HotkeyAction.TASKLIST_MOVE_DOWN_ALT], listDown],
     [hotkeys[HotkeyAction.TASKLIST_OPEN_ACTIVE_ROW], openActiveRow],
     [hotkeys[HotkeyAction.TASKLIST_TOGGLE_COMPLETED], () => {
-      activeTask.toggle()
-      listDown()
+      if (activeTask) { activeTask.toggle(); listDown() }
     }],
     [hotkeys[HotkeyAction.TASK_SET_TYPE_PROJECT], () => setTaskType(TaskType.PROJECT)],
     [hotkeys[HotkeyAction.TASK_SET_TYPE_NEXT_ACTION], () => setTaskType(TaskType.NEXT_ACTION)],
@@ -160,6 +159,7 @@
 
     // Create the standard tabs
     const tabs = [
+      { label: DefaultTabs.INBOX },
       { label: DefaultTabs.TASKS },
       { label: DefaultTabs.PROJECTS },
       { label: DefaultTabs.SOMEDAY }
@@ -177,10 +177,12 @@
     // Create the task lists
     let tasks = []
     // Filter using the built-in or custom user function
-    if (state.activeTab === DefaultTabs.SOMEDAY) {
+    if (state.activeTab === DefaultTabs.INBOX) {
+      tasks = plugin.tasks.getTasks(TaskType.INBOX)
+    } else if (state.activeTab === DefaultTabs.SOMEDAY) {
       tasks = plugin.tasks.getTasks(TaskType.SOMEDAY)
     } else if (state.activeTab === DefaultTabs.TASKS) {
-      tasks = plugin.tasks.getTasklist()
+      tasks = plugin.tasks.getTasklist().filter(task => task.type !== TaskType.INBOX)
     } else if (state.activeTab === DefaultTabs.PROJECTS) {
       tasks = plugin.tasks.getTasks(TaskType.PROJECT)
     } else {
@@ -202,6 +204,7 @@
   }
 
   function setTaskType (type: TaskType) {
+    if (!activeTask) return
     if (type !== activeTask.type) {
       activeTask.setAs(type)
       // If someone has changed the type of a task it will change position on the list,
@@ -212,7 +215,7 @@
   }
 
   function newTask () {
-    const project = activeTask.type === TaskType.PROJECT ? activeTask : null
+    const project = activeTask?.type === TaskType.PROJECT ? activeTask : null
     new TaskInputModal(plugin, project, async (taskText) => {
       if (!taskText.trim().length) {
         return
