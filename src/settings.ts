@@ -73,6 +73,7 @@ const tabSettings = [
 export interface TaskZeroSettings {
   defaultNote: string;
   archiveNote: string;
+  projectsFolder: string;
   taskBlockPrefix: string;
   styleBlockId: boolean;
   displayOptions: {
@@ -110,6 +111,7 @@ export interface TaskZeroSettings {
 export const DEFAULT_SETTINGS: TaskZeroSettings = {
   defaultNote: 'Task Zero quick add.md',
   archiveNote: 'Task Zero completed tasks.md',
+  projectsFolder: 'Projects',
   taskBlockPrefix: 'tz',
   styleBlockId: true,
   displayOptions: {
@@ -182,6 +184,10 @@ export const DEFAULT_SETTINGS: TaskZeroSettings = {
     },
     [HotkeyAction.TASKLIST_STAGE_TODAY]: {
       key: 't',
+      modifiers: []
+    },
+    [HotkeyAction.TASKLIST_PROMOTE_TO_FILE]: {
+      key: 'f',
       modifiers: []
     },
   },
@@ -259,6 +265,17 @@ export class DoSettingTab extends PluginSettingTab {
         })
         text.setValue(this.plugin.settings.archiveNote)
       })
+
+    new Setting(containerEl)
+      .setName('Projects folder')
+      .setDesc('The folder where file-based projects will be created when you promote a project with the "f" key.')
+      .addText(text => text
+        .setPlaceholder(DEFAULT_SETTINGS.projectsFolder)
+        .setValue(this.plugin.settings.projectsFolder)
+        .onChange(async (value) => {
+          this.plugin.settings.projectsFolder = value || DEFAULT_SETTINGS.projectsFolder
+          await this.plugin.saveSettings()
+        }))
 
     new Setting(containerEl)
       .setName('Style task block IDs')

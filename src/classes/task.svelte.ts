@@ -234,7 +234,7 @@ export class Task implements TaskRow {
     return this.#resultFromInit()
   }
 
-  initFromListItem (item: ListItemCache, cacheUpdate: CacheUpdate, previous: CacheUpdateItem[]) {
+  initFromListItem (item: ListItemCache, cacheUpdate: CacheUpdate, previous: CacheUpdateItem[], projectParentId = 0) {
     // Get the original task line
     const lines = cacheUpdate.data.split('\n')
     const originalLine = lines[item.position.start.line] || ''
@@ -325,6 +325,18 @@ export class Task implements TaskRow {
           record.type = TaskType.NEXT_ACTION
         }
       }
+    } else if (projectParentId) {
+      // Top-level task in a project file — treat as a direct child of the linked project task
+      record.parent = projectParentId
+      const hasActivePreviousSibling = previous.find(prev =>
+        prev.task.parent === projectParentId &&
+        !prev.task.isCompleted &&
+        prev.task.type !== TaskType.PROJECT)
+      if (hasActivePreviousSibling) {
+        record.type = TaskType.DEPENDENT
+      } else if (!record.type || [TaskType.INBOX, TaskType.DEPENDENT].includes(record.type)) {
+        record.type = TaskType.NEXT_ACTION
+      }
     } else {
       // The note is the source-of-truth, so if the task has been re-ordered and there's
       // no longer a parent, we need to update the DB to match
@@ -391,7 +403,7 @@ export class Task implements TaskRow {
     return this
   }
 
-  generateMarkdownTask () {
+  generateMarkdownTask (baseDepth = 0) {
     const displayOptions = this.#tasks.plugin.settings.displayOptions
 
     // Get indentation level
@@ -401,6 +413,7 @@ export class Task implements TaskRow {
       indent++
       parent = this.#tasks.db.getRow(parent)?.parent || 0
     }
+    indent = Math.max(0, indent - baseDepth)
 
     // Scheduled date
     let scheduled = ''

@@ -17,6 +17,7 @@
   import { Task, TaskEmoji, TaskType } from '../../classes/task.svelte'
   import { TaskInputModal } from '../task-input-modal'
   import { MoveToProjectModal } from '../move-to-project-modal'
+  import { PromoteToFileModal } from '../promote-to-file-modal'
   import Tabs from './Tabs.svelte'
   import { debounce, WorkspaceLeaf } from 'obsidian'
   import { HotkeyAction, HotkeyModal } from '../hotkeys'
@@ -129,6 +130,7 @@
     [hotkeys[HotkeyAction.TASK_SET_TYPE_WAITING_ON], () => setTaskType(TaskType.WAITING_ON)],
     [hotkeys[HotkeyAction.TASKLIST_STAGE_TODAY], () => { activeTask.stageForToday(); refresh() }],
     [hotkeys[HotkeyAction.TASKLIST_MOVE_TASK], () => { if (activeTask) new MoveToProjectModal(plugin, activeTask).open() }],
+    [hotkeys[HotkeyAction.TASKLIST_PROMOTE_TO_FILE], () => { if (activeTask?.type === TaskType.PROJECT) new PromoteToFileModal(plugin, activeTask).open() }],
     [hotkeys[HotkeyAction.TASKLIST_NEW_TASK], newTask],
     [hotkeys[HotkeyAction.TASKLIST_PREV_TAB], () => {
       const i = state.tabs.findIndex(t => t.label === state.activeTab)
@@ -141,7 +143,11 @@
     [{
       key: '?',
       modifiers: ['Shift']
-    }, () => new HotkeyModal(plugin).open()]
+    }, () => new HotkeyModal(plugin).open()],
+    [{
+      key: 'Enter',
+      modifiers: ['Ctrl']
+    }, () => { if (activeTask) void activeTask.openLink() }]
   ])
 
   // Add hotkeys for Alt + 1-9 for switching tabs
@@ -244,6 +250,10 @@
       if (target.href.startsWith('app')) {
         plugin.app.workspace.openLinkText(target.innerText, '')
       }
+    } else if (event.ctrlKey) {
+      const task = state.tasks.find(t => t.id === id)
+      const wikilink = task?.text.match(/\[\[([^\]]+)]]/)?.[1]
+      if (wikilink) plugin.app.workspace.openLinkText(wikilink, '')
     } else {
       if (state.activeId === id) {
         state.sidebar.open = !state.sidebar.open

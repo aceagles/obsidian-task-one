@@ -61,9 +61,21 @@ export class Tasks {
       return
     }
 
+    // If this is a project file, find the linked task so new top-level tasks
+    // are automatically parented to it, and compute the baseDepth so write-back
+    // generates correctly indented lines (top-level tasks should be at indent 0)
+    let projectParentId = 0
+    const projectBaseDepth = this.#getProjectBaseDepth(cacheUpdate.file)
+    if (cacheUpdate.cache?.frontmatter?.type === 'project') {
+      const linkedRow = this.db.rows().find(row =>
+        !row.orphaned && row.text.includes(`[[${cacheUpdate.file.basename}]]`)
+      )
+      projectParentId = linkedRow?.id || 0
+    }
+
     const processed: CacheUpdateItem[] = []
     for (const item of (cacheUpdate.cache.listItems?.filter(x => x.task) || [])) {
-      const res = new Task(this).initFromListItem(item, cacheUpdate, processed)
+      const res = new Task(this).initFromListItem(item, cacheUpdate, processed, projectParentId)
       if (res.valid) {
         processed.push({
           task: res.task,
@@ -87,7 +99,7 @@ export class Tasks {
           // (this is the ideal case)
           const lines = cacheUpdate.data.split('\n')
           for (const row of updated) {
-            const newLine = row.task.generateMarkdownTask()
+            const newLine = row.task.generateMarkdownTask(projectBaseDepth)
             if (lines[row.cacheItem.position.start.line] !== newLine) {
               lines[row.cacheItem.position.start.line] = newLine
               updatedCount++
@@ -211,14 +223,30 @@ export class Tasks {
   async updateTasksInNote (path: string, tasks: Task[]) {
     const tfile = this.app.vault.getFileByPath(path)
     if (tfile) {
+      const baseDepth = this.#getProjectBaseDepth(tfile)
       await this.app.vault.process(tfile, data => {
         debug(`Updated ${tasks.length} tasks in ${path}`)
         for (const task of tasks) {
-          data = data.replace(this.taskLineRegex(task.id), task.generateMarkdownTask())
+          data = data.replace(this.taskLineRegex(task.id), task.generateMarkdownTask(baseDepth))
         }
         return data
       })
     }
+  }
+
+  /**
+   * For project files, returns the baseDepth needed so top-level tasks
+   * in the file render at indent 0. Returns 0 for regular notes.
+   */
+  #getProjectBaseDepth (tfile: TFile): number {
+    const metadata = this.app.metadataCache.getFileCache(tfile)
+    if (metadata?.frontmatter?.type !== 'project') return 0
+    const linkedRow = this.db.rows().find(row =>
+      !row.orphaned && row.text.includes(`[[${tfile.basename}]]`)
+    )
+    if (!linkedRow) return 0
+    const projectTask = new Task(this).initFromId(linkedRow.id).task
+    return projectTask.ancestors.length + 1
   }
 
   async addTaskToDefaultNote (task: Task) {
@@ -237,6 +265,64 @@ export class Tasks {
         void this.addTaskToDefaultNote(task)
       }
     }).open()
+  }
+
+  /**
+   * Promote a project task to a dedicated file-based project.
+   * Creates a new file in the projects folder, moves all subtasks into it,
+   * and replaces the original task line with a linked task.
+   */
+  async promoteToFileProject (task: Task) {
+    const folder = this.plugin.settings.projectsFolder || 'Projects'
+    const filePath = `${folder}/${task.text}.md`
+    const descendants = task.descendants
+    const baseDepth = task.ancestors.length + 1
+
+    // Build the project file content
+    const taskLines = descendants.map(d => d.generateMarkdownTask(baseDepth)).join('\n')
+    const fileContent = `---\ntype: project\n---\n\n# ${task.text}\n\n${taskLines}\n`
+
+    // Create the project file (create folder if needed)
+    try {
+      if (!this.app.vault.getFolderByPath(folder)) {
+        await this.app.vault.createFolder(folder)
+      }
+      await this.app.vault.create(filePath, fileContent)
+    } catch (e) {
+      debug('Failed to create project file: ' + e)
+      return
+    }
+
+    // Remove descendant lines and replace project task with linked task in the original file
+    const descendantIds = new Set(descendants.map(d => d.id))
+    const linkedTask = `- [ ] ${task.generateMarkdownTask().split('- [ ] ')[1]?.split(task.text)[0] || ''}[[${task.text}]] ^${this.blockPrefix}${task.id}`
+    const originalFile = this.app.vault.getFileByPath(task.path)
+    if (originalFile) {
+      await this.app.vault.process(originalFile, data => {
+        let lines = data.split('\n')
+        // Remove descendant lines (walk backwards to preserve indices)
+        for (let i = lines.length - 1; i >= 0; i--) {
+          const idMatch = lines[i].match(new RegExp(`\\^${this.blockPrefix}(\\d+)\\s*$`))
+          if (idMatch && descendantIds.has(parseInt(idMatch[1], 10))) {
+            lines.splice(i, 1)
+          }
+        }
+        // Replace project task line with linked task
+        const projectLineIndex = lines.findIndex(l => l.endsWith(`^${this.blockPrefix}${task.id}`))
+        if (projectLineIndex !== -1) {
+          lines[projectLineIndex] = linkedTask
+        }
+        return lines.join('\n')
+      })
+    }
+
+    // Update each descendant's path in the DB
+    descendants.forEach(d => {
+      d.path = filePath
+      this.db.update(d.getData())
+    })
+
+    dbEvents.emit(DatabaseEvent.TasksExternalChange)
   }
 
   /**
