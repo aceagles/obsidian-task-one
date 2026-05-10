@@ -6,7 +6,7 @@ Everybody who practises GTD in any way has their own unique setup. This is mine,
 
 ### Vim keybindings
 
-The original plugin used J and K for navigating up and down tasks, but it was backwards compared to Vim. I have changed this to match and also added H and L to navigate between the tags.
+The original plugin used J and K for navigating up and down tasks, but it was backwards compared to Vim. I have changed this to match and also added H and L to navigate between the tabs.
 
 ### Separate Inbox
 
