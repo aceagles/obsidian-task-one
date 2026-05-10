@@ -9,6 +9,7 @@
 
   function toggle(event: Event) {
     event.stopPropagation();
+    if (task.isFileProject) return
     task.userIsActive()
     task.toggle()
   }

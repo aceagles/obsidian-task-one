@@ -148,7 +148,8 @@
     [{
       key: 'Enter',
       modifiers: ['Ctrl']
-    }, () => { if (activeTask) void activeTask.openLink() }]
+    }, () => { if (activeTask) void activeTask.openLink() }],
+    [{ key: 'o', modifiers: [] }, () => { if (activeTask?.isFileProject) void activeTask.openLink() }]
   ])
 
   // Add hotkeys for Alt + 1-9 for switching tabs

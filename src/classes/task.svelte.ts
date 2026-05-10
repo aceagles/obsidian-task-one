@@ -96,6 +96,10 @@ export class Task implements TaskRow {
     return this.status === TaskStatus.DONE
   }
 
+  get isFileProject () {
+    return this.type === TaskType.PROJECT && /\[\[([^\]]+)\]\]/.test(this.text)
+  }
+
   /**
    * "Due" is considered a task which has a "scheduled" or "due" date which is on or before today
    */
@@ -179,7 +183,8 @@ export class Task implements TaskRow {
       parent: 0,
       due: '',
       scheduled: '',
-      completed: ''
+      completed: '',
+      staged: ''
     }
   }
 

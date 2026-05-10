@@ -72,8 +72,8 @@ export class HotkeyModal extends Modal {
       HOTKEY_DESCRIPTIONS[HotkeyAction.OPEN_KEYBOARD_SHORTCUTS]
     )
     renderShortcutRow(list,
-      [{ key: 'Enter', modifiers: ['Ctrl'] }],
-      'Navigate to task / project location'
+      [{ key: 'Enter', modifiers: ['Ctrl'] }, { key: 'o', modifiers: [] }],
+      'Navigate to task / project location (o: file projects only)'
     )
   }
 
