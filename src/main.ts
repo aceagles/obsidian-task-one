@@ -94,7 +94,9 @@ export default class TaskZeroPlugin extends Plugin {
   }
 
   async loadSettings () {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData())
+    const saved = await this.loadData()
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, saved)
+    this.settings.hotkeys = Object.assign({}, DEFAULT_SETTINGS.hotkeys, saved?.hotkeys)
   }
 
   async saveSettings () {

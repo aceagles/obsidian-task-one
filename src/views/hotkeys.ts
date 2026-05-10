@@ -16,6 +16,8 @@ export enum HotkeyAction {
   TASK_SET_TYPE_WAITING_ON = 'task-set-type-waiting-on',
   TASKLIST_TOGGLE_COMPLETED = 'task-toggle-completed',
   OPEN_KEYBOARD_SHORTCUTS = 'open-keyboard-shortcuts',
+  TASKLIST_PREV_TAB = 'tasklist-prev-tab',
+  TASKLIST_NEXT_TAB = 'tasklist-next-tab',
 }
 
 export const HOTKEY_DESCRIPTIONS: Record<HotkeyAction, string> = {
@@ -33,6 +35,8 @@ export const HOTKEY_DESCRIPTIONS: Record<HotkeyAction, string> = {
   [HotkeyAction.TASK_SET_TYPE_WAITING_ON]: 'Set the task type to "Waiting On"',
   [HotkeyAction.TASKLIST_TOGGLE_COMPLETED]: 'Toggle the completed status of the task',
   [HotkeyAction.OPEN_KEYBOARD_SHORTCUTS]: 'Open this help screen',
+  [HotkeyAction.TASKLIST_PREV_TAB]: 'Move to the previous tab',
+  [HotkeyAction.TASKLIST_NEXT_TAB]: 'Move to the next tab',
 }
 
 export class HotkeyModal extends Modal {

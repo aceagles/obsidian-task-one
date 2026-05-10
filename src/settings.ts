@@ -172,6 +172,14 @@ export const DEFAULT_SETTINGS: TaskZeroSettings = {
       key: 'w',
       modifiers: []
     },
+    [HotkeyAction.TASKLIST_PREV_TAB]: {
+      key: 'h',
+      modifiers: []
+    },
+    [HotkeyAction.TASKLIST_NEXT_TAB]: {
+      key: 'l',
+      modifiers: []
+    },
   },
   excludeTags: {
     note: '#exclude-all-tasks',

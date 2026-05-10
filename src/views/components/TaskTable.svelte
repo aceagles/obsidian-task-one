@@ -130,6 +130,14 @@
     [hotkeys[HotkeyAction.TASK_SET_TYPE_WAITING_ON], () => setTaskType(TaskType.WAITING_ON)],
     [hotkeys[HotkeyAction.TASKLIST_MOVE_TASK], () => { if (activeTask) new MoveToProjectModal(plugin, activeTask).open() }],
     [hotkeys[HotkeyAction.TASKLIST_NEW_TASK], newTask],
+    [hotkeys[HotkeyAction.TASKLIST_PREV_TAB], () => {
+      const i = state.tabs.findIndex(t => t.label === state.activeTab)
+      switchTab(i)
+    }],
+    [hotkeys[HotkeyAction.TASKLIST_NEXT_TAB], () => {
+      const i = state.tabs.findIndex(t => t.label === state.activeTab)
+      switchTab(i + 2)
+    }],
     [{
       key: '?',
       modifiers: ['Shift']
