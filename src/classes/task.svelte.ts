@@ -566,7 +566,14 @@ export class Task implements TaskRow {
   }
 
   async openLink () {
-    return this.#app.workspace.openLinkText(this.basename, this.path)
+    const wikilink = this.text.match(/\[\[([^\]]+)\]\]/)?.[1]
+    if (wikilink) {
+      return this.#app.workspace.openLinkText(wikilink, this.path)
+    }
+    return this.#app.workspace.openLinkText(
+      `${this.basename}#^${this.blockPrefix}${this.id}`,
+      this.path
+    )
   }
 
   #initFromTextOrMarkdownTask (text: string, isMarkdownTaskLine = false) {
