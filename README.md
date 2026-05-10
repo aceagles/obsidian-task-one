@@ -19,6 +19,10 @@ The goals of this project are:
 
 See here: [https://taskzero.alan.gr/getting-started](https://taskzero.alan.gr/getting-started)
 
+## Daily note integration
+
+Press `t` on any task to stage it for today. See [docs/daily-note-integration.md](docs/daily-note-integration.md) for a Dataview snippet you can paste into your daily note template.
+
 ## How to install
 
 The plugin is currently going through the review process, so is not yet available in the plugin store. In the meantime, you can install it with BRAT:
