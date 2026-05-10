@@ -1,4 +1,4 @@
-import { type Hotkey, Modal, Setting } from 'obsidian'
+import { Modal, Setting } from 'obsidian'
 import TaskZeroPlugin from '../main'
 
 export enum HotkeyAction {
@@ -58,11 +58,23 @@ export class HotkeyModal extends Modal {
       .setHeading()
       .setName('Keyboard Shortcuts')
 
+    const list = contentEl.createEl('div', { cls: 'task-zero-shortcut-list' })
+
     for (const [key, description] of Object.entries(HOTKEY_DESCRIPTIONS)) {
+      if (key === HotkeyAction.OPEN_KEYBOARD_SHORTCUTS) continue
       const hotkey = this.plugin.settings.hotkeys[key as HotkeyAction]
       if (!hotkey) continue
-      contentEl.createEl('p', { text: `${remapKeyName(hotkey)} - ${description}` })
+      renderShortcutRow(list, [hotkey], description)
     }
+
+    renderShortcutRow(list,
+      [{ key: 'q', modifiers: [] }, { key: '?', modifiers: ['Shift'] }],
+      HOTKEY_DESCRIPTIONS[HotkeyAction.OPEN_KEYBOARD_SHORTCUTS]
+    )
+    renderShortcutRow(list,
+      [{ key: 'Enter', modifiers: ['Ctrl'] }],
+      'Navigate to task / project location'
+    )
   }
 
   onClose () {
@@ -71,7 +83,31 @@ export class HotkeyModal extends Modal {
   }
 }
 
-function remapKeyName (hotkey: Hotkey): string {
-  if (hotkey?.key === ' ') return 'Space'
-  return hotkey?.key || ''
+type ShortcutKey = { key: string; modifiers?: string[] }
+
+function renderShortcutRow (container: HTMLElement, hotkeys: ShortcutKey[], description: string) {
+  const row = container.createEl('div', { cls: 'task-zero-shortcut-row' })
+  const keysEl = row.createEl('span', { cls: 'task-zero-shortcut-keys' })
+
+  hotkeys.forEach((hotkey, i) => {
+    if (i > 0) keysEl.createSpan({ cls: 'task-zero-shortcut-sep', text: '/' })
+    for (const mod of (hotkey.modifiers ?? [])) {
+      keysEl.createEl('kbd', { cls: 'task-zero-kbd', text: mod })
+    }
+    keysEl.createEl('kbd', { cls: 'task-zero-kbd', text: remapKeyName(hotkey) })
+  })
+
+  row.createEl('span', { cls: 'task-zero-shortcut-desc', text: description })
+}
+
+function remapKeyName (hotkey: ShortcutKey): string {
+  const keyMap: Record<string, string> = {
+    ' ': 'Space',
+    'ArrowUp': '↑',
+    'ArrowDown': '↓',
+    'ArrowLeft': '←',
+    'ArrowRight': '→',
+    'Escape': 'Esc',
+  }
+  return keyMap[hotkey?.key] ?? hotkey?.key ?? ''
 }

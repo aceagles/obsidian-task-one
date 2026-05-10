@@ -140,6 +140,7 @@
       const i = state.tabs.findIndex(t => t.label === state.activeTab)
       switchTab(i + 2)
     }],
+    [{ key: 'q', modifiers: [] }, () => new HotkeyModal(plugin).open()],
     [{
       key: '?',
       modifiers: ['Shift']
@@ -332,6 +333,7 @@
 </script>
 
 <div class="task-zero-view">
+    <span class="task-zero-shortcut-hint">q — shortcuts</span>
     <Sidebar {activeTask} {state} {scopes} {plugin}/>
     <Tabs {state}/>
     <table class="task-zero-table">

@@ -12,6 +12,63 @@ body.task-zero .HyperMD-task-line .cm-blockid {
     max-width: 900px;
     margin: 0 auto;
     height: 100%;
+    position: relative;
+}
+
+.task-zero-shortcut-hint {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.75em;
+    color: var(--text-muted);
+    opacity: 0.4;
+    user-select: none;
+    pointer-events: none;
+}
+
+.task-zero-shortcut-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    margin-top: 0.5em;
+}
+
+.task-zero-shortcut-row {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.task-zero-shortcut-keys {
+    min-width: 130px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 2px;
+}
+
+.task-zero-shortcut-sep {
+    color: var(--text-muted);
+    margin: 0 0.3em;
+    font-size: 0.85em;
+}
+
+.task-zero-kbd {
+    display: inline-block;
+    padding: 0.1em 0.4em;
+    font-size: 0.82em;
+    font-family: var(--font-monospace);
+    line-height: 1.4;
+    color: var(--text-normal);
+    background-color: var(--background-primary-alt);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.task-zero-shortcut-desc {
+    color: var(--text-normal);
+    font-size: 0.9em;
 }
 
 .task-zero-table {
