@@ -180,6 +180,10 @@ export const DEFAULT_SETTINGS: TaskZeroSettings = {
       key: 'l',
       modifiers: []
     },
+    [HotkeyAction.TASKLIST_STAGE_TODAY]: {
+      key: 't',
+      modifiers: []
+    },
   },
   excludeTags: {
     note: '#exclude-all-tasks',

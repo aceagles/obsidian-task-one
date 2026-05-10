@@ -18,6 +18,7 @@ export enum HotkeyAction {
   OPEN_KEYBOARD_SHORTCUTS = 'open-keyboard-shortcuts',
   TASKLIST_PREV_TAB = 'tasklist-prev-tab',
   TASKLIST_NEXT_TAB = 'tasklist-next-tab',
+  TASKLIST_STAGE_TODAY = 'tasklist-stage-today',
 }
 
 export const HOTKEY_DESCRIPTIONS: Record<HotkeyAction, string> = {
@@ -37,6 +38,7 @@ export const HOTKEY_DESCRIPTIONS: Record<HotkeyAction, string> = {
   [HotkeyAction.OPEN_KEYBOARD_SHORTCUTS]: 'Open this help screen',
   [HotkeyAction.TASKLIST_PREV_TAB]: 'Move to the previous tab',
   [HotkeyAction.TASKLIST_NEXT_TAB]: 'Move to the next tab',
+  [HotkeyAction.TASKLIST_STAGE_TODAY]: 'Stage task for today'
 }
 
 export class HotkeyModal extends Modal {

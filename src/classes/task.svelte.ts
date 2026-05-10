@@ -53,6 +53,7 @@ export interface TaskRow {
   due: string
   scheduled: string
   completed: string
+  staged: string
 }
 
 export class Task implements TaskRow {
@@ -68,6 +69,7 @@ export class Task implements TaskRow {
   due = ''
   scheduled = ''
   completed = ''
+  staged = ''
   renderedMarkdown = $state('')
   markdownComponent = new Component()
   markdownTaskParser: MarkdownTaskParser
@@ -206,7 +208,8 @@ export class Task implements TaskRow {
       parent: this.parent,
       due: this.due,
       scheduled: this.scheduled,
-      completed: this.completed
+      completed: this.completed,
+      staged: this.staged
     }
   }
 
@@ -363,6 +366,15 @@ export class Task implements TaskRow {
     } else {
       return this.#initFromTextOrMarkdownTask(markdownTask, true)
     }
+  }
+
+  get isStagedForToday () {
+    return this.staged === moment().format('YYYY-MM-DD')
+  }
+
+  stageForToday () {
+    this.staged = this.isStagedForToday ? '' : moment().format('YYYY-MM-DD')
+    this.update()
   }
 
   toggle () {

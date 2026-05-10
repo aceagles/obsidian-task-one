@@ -127,6 +127,7 @@
     [hotkeys[HotkeyAction.TASK_SET_TYPE_NEXT_ACTION], () => setTaskType(TaskType.NEXT_ACTION)],
     [hotkeys[HotkeyAction.TASK_SET_TYPE_SOMEDAY], () => setTaskType(TaskType.SOMEDAY)],
     [hotkeys[HotkeyAction.TASK_SET_TYPE_WAITING_ON], () => setTaskType(TaskType.WAITING_ON)],
+    [hotkeys[HotkeyAction.TASKLIST_STAGE_TODAY], () => { activeTask.stageForToday(); refresh() }],
     [hotkeys[HotkeyAction.TASKLIST_MOVE_TASK], () => { if (activeTask) new MoveToProjectModal(plugin, activeTask).open() }],
     [hotkeys[HotkeyAction.TASKLIST_NEW_TASK], newTask],
     [hotkeys[HotkeyAction.TASKLIST_PREV_TAB], () => {
@@ -160,6 +161,7 @@
     // Create the standard tabs
     const tabs = [
       { label: DefaultTabs.INBOX },
+      { label: DefaultTabs.TODAY },
       { label: DefaultTabs.TASKS },
       { label: DefaultTabs.PROJECTS },
       { label: DefaultTabs.SOMEDAY }
@@ -179,6 +181,8 @@
     // Filter using the built-in or custom user function
     if (state.activeTab === DefaultTabs.INBOX) {
       tasks = plugin.tasks.getTasks(TaskType.INBOX)
+    } else if (state.activeTab === DefaultTabs.TODAY) {
+      tasks = plugin.tasks.getTasklist().filter(task => task.isStagedForToday)
     } else if (state.activeTab === DefaultTabs.SOMEDAY) {
       tasks = plugin.tasks.getTasks(TaskType.SOMEDAY)
     } else if (state.activeTab === DefaultTabs.TASKS) {
@@ -361,6 +365,9 @@
                     </td>
                 {/if}
                 <td class="task-zero-table-due">
+                    {#if task.isStagedForToday && state.activeTab !== DefaultTabs.TODAY}
+                        <span class="tag">⭐ today</span>
+                    {/if}
                     {#if task.isDue}
                         <a href="." class="tag">{fromNow(task.isDue)}</a>
                     {/if}
