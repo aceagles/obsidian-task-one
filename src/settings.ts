@@ -129,11 +129,11 @@ export const DEFAULT_SETTINGS: TaskZeroSettings = {
       modifiers: []
     },
     [HotkeyAction.TASKLIST_MOVE_UP_ALT]: {
-      key: 'j',
+      key: 'k',
       modifiers: []
     },
     [HotkeyAction.TASKLIST_MOVE_DOWN_ALT]: {
-      key: 'k',
+      key: 'j',
       modifiers: []
     },
     [HotkeyAction.TASKLIST_SIDEBAR_CLOSE]: {
