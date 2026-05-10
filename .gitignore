@@ -23,3 +23,5 @@ data.json
 
 # Database files
 db-*.json
+
+vault-files/
