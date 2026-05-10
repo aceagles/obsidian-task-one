@@ -6,7 +6,7 @@ See also: [[prd-file-project-canonical-location]]
 
 ---
 
-## Issue 1 — File-backed project row UI hardening
+## Issue 1 — File-backed project row UI hardening [COMPLETE]
 
 **Type**: AFK
 **Blocked by**: None
@@ -25,7 +25,7 @@ Two UI changes to the wikilink row for file-backed projects. First, add `o` as a
 
 ---
 
-## Issue 2 — vault.delete cascade
+## Issue 2 — vault.delete cascade [COMPLETE]
 
 **Type**: AFK
 **Blocked by**: None
