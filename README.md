@@ -1,3 +1,25 @@
+# Task One plugin for Obsidian
+
+Everybody who practises GTD in any way has their own unique setup. This is mine, built upon the brilliant plugin by Alan Grainger.
+
+## Changes in One vs Zero
+
+### Vim keybindings
+
+The original plugin used J and K for navigating up and down tasks, but it was backwards compared to Vim. I have changed this to match and also added H and L to navigate between the tags.
+
+### Separate Inbox
+
+I don't like seeing the clutter of the inbox when I'm going about my day. I need to be in a special mental space to process this, and so I've given it its own tab.
+
+### Today Tab / Dataview
+
+I like to start my day by looking through my tasks and staging a number of tasks that I think I will complete in the day. I then only want to see these tasks for the duration of the day, so these have their own tab. Additionally, there is a data view for use in a template on the daily note, so that I can also see today's tasks on the daily note, which I tend to use as a scratch pad.
+
+### Projects as Files
+
+For larger projects, it feels a bit too ephemeral to have them just as nested task lists. There is now the option to promote a project into a file-based project. This will create a project, create the file, move all nested tasks and projects into it, and then update links. It will then behave more or less the same as other projects, except they will have an actual location.
+
 # Task Zero plugin for Obsidian
 
 Task Zero is a keyboard-first GTD task management system for Obsidian.

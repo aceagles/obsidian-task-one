@@ -168,8 +168,8 @@
 
     // Create the standard tabs
     const tabs = [
-      { label: DefaultTabs.INBOX },
-      { label: DefaultTabs.TODAY },
+      { label: DefaultTabs.INBOX, count: plugin.tasks.getTasks(TaskType.INBOX).length || undefined },
+      { label: DefaultTabs.TODAY, count: plugin.tasks.getTasklist().filter(task => task.isStagedForToday).length || undefined },
       { label: DefaultTabs.TASKS },
       { label: DefaultTabs.PROJECTS },
       { label: DefaultTabs.SOMEDAY }

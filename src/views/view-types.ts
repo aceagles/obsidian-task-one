@@ -18,6 +18,7 @@ export interface Tab {
   label: string,
   tag?: string,
   icon?: string,
+  count?: number,
   filter?: (task: Task) => boolean
 }
 

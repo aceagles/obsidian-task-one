@@ -173,3 +173,20 @@ body.task-zero .HyperMD-task-line .cm-blockid {
     display: flex;
     flex-grow: 1;
 }
+
+.task-zero-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.3em;
+    height: 1.3em;
+    padding: 0 0.3em;
+    margin-left: 0.4em;
+    font-size: 0.72em;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text-on-accent);
+    background-color: var(--interactive-accent);
+    border-radius: 1em;
+    vertical-align: middle;
+}

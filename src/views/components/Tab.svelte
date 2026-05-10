@@ -25,6 +25,11 @@
         aria-label={tab.label} role="tab" tabindex={tabIndex}>
     <div class="workspace-tab-header-inner">
         <div bind:this={iconEl} class="workspace-tab-header-inner-icon"></div>
-        <div class="workspace-tab-header-inner-title">{tab.label}</div>
+        <div class="workspace-tab-header-inner-title">
+            {tab.label}
+            {#if tab.count}
+                <span class="task-zero-tab-count">{tab.count}</span>
+            {/if}
+        </div>
     </div>
 </div>
