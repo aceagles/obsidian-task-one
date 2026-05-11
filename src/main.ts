@@ -8,6 +8,7 @@ import { UpdateQueue } from './classes/update-queue'
 import { DatabaseEvent, dbEvents } from './classes/database-events'
 import { Task } from './classes/task.svelte'
 import { MoveToProjectModal } from './views/move-to-project-modal'
+import { WatchScan } from './classes/watch-scan'
 
 export default class TaskZeroPlugin extends Plugin {
   tasks!: Tasks
@@ -24,6 +25,7 @@ export default class TaskZeroPlugin extends Plugin {
     this.#updateQueue = new UpdateQueue(this)
 
     this.tasks = new Tasks(this)
+    new WatchScan(this)
 
     this.registerView(
       TASK_ZERO_VIEW_TYPE,

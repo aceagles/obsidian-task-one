@@ -94,6 +94,8 @@ export interface TaskZeroSettings {
   }
   tasklistTabs: Tab[];
   masterAppId: string;
+  watchPaths: string;
+  lastStartupScan: number;
   database: {
     tasks: {
       autoincrement: number;
@@ -198,6 +200,8 @@ export const DEFAULT_SETTINGS: TaskZeroSettings = {
   },
   tasklistTabs: [],
   masterAppId: '',
+  watchPaths: '',
+  lastStartupScan: 0,
   database: {
     tasks: {
       autoincrement: 1,
@@ -355,6 +359,24 @@ export class DoSettingTab extends PluginSettingTab {
             })
         })
     }
+
+    new Setting(containerEl)
+      .setHeading()
+      .setName('Watch paths')
+      .setDesc('Files and folders to scan for new tasks on startup and when changed (e.g. via git sync). One path per line. You can specify individual files (e.g. "inbox.md") or folders (e.g. "Daily Notes").')
+
+    new Setting(containerEl)
+      .addTextArea(text => {
+        text
+          .setPlaceholder('Daily Notes\ninbox.md')
+          .setValue(this.plugin.settings.watchPaths)
+          .onChange(async value => {
+            this.plugin.settings.watchPaths = value
+            await this.plugin.saveSettings()
+          })
+        text.inputEl.rows = 5
+        text.inputEl.style.width = '100%'
+      })
 
     /*
      * Advanced settings
