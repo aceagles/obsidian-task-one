@@ -62,7 +62,7 @@ export class UpdateQueue {
   async #processQueue () {
     if (this.#running) return
 
-    if (this.#plugin.isMaster() && this.#plugin.userActivity.isActive()) {
+    if ((this.#plugin.isMaster() || !this.#plugin.settings.masterAppId) && this.#plugin.userActivity.isActive()) {
       this.#running = true
       for (const cacheItemPath of this.#queue) {
         try {
