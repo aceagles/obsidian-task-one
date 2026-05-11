@@ -24,6 +24,11 @@ For larger projects, it feels a bit too ephemeral to have them just as nested ta
 
 Tasks will now wrap in the truncate in the task list so that you can always read a full task.
 
+### Syncing with Obsidian Git
+
+The original plugin was built around using Obsidian sync, and so there is the concept of master applications which handle all of the managing of the JSON in data.json. I use Git to synchronise between my instances, and so I have left that in place but also allowed it to be nullable, and so any one of my devices can be master. This isn't perfect yet, as if you use devices concurrently you get issues merging your task list and the auto increment number. I'm currently getting around this by using one laptop at a time and having the task one plugin disabled on my mobile. I've added in a function which will scan mobile quick adds on startup and on git sync when I get back to desktop. I will probably change this to use parallel task lists per device and then aggregate them whenever they're displayed in the plugin. 
+
+
 # Task Zero plugin for Obsidian
 
 Task Zero is a keyboard-first GTD task management system for Obsidian.
