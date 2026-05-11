@@ -20,7 +20,10 @@
       scopes.sidebar.enable()
     } else {
       scopes.sidebar.disable()
-      scopes.tasklist.enable()
+      // Only re-enable the tasklist scope if the view is still active.
+      // Without this guard the effect can re-push the scope after
+      // disableAllScopes() has already cleaned up on navigation away.
+      if (state.viewIsActive) scopes.tasklist.enable()
     }
   })
 

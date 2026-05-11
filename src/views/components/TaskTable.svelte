@@ -329,7 +329,12 @@
    * Watch for the view to become active and set the reactive state property
    */
   function watchLeafChanges (leaf: WorkspaceLeaf | null) {
-    state.viewIsActive = leaf?.view instanceof TaskZeroView
+    const isActive = leaf?.view instanceof TaskZeroView
+    state.viewIsActive = isActive
+    // Eagerly disable scopes synchronously — don't wait for Svelte's async
+    // effect scheduling, which would leave a window where the tasklist scope
+    // intercepts keys (j/k/h/o/Esc etc.) in the newly-focused editor.
+    if (!isActive) view.disableAllScopes()
   }
 </script>
 
